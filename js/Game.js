@@ -26,27 +26,36 @@ CatcherGame.Game.prototype = {
         this.DEBUG_MODE = true;
         this.stage.backgroundColor = '#222222';
         //this.add.sprite(0, 0, 'background');
-        //this.physics.startSystem(Phaser.Physics.ARCADE);
+        this.worldCenter = new Phaser.Point(this.world.centerX, this.world.centerY);
+        this.world.setBounds(-this.world.centerX,  -this.world.centerY, this.world.width*2, this.world.height*2);
 
         this.hotspots = [];
-		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX, this.world.centerY - 140, 0));
-		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX + 140, this.world.centerY, 90));
-		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX, this.world.centerY + 140, 180));
-		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX - 140, this.world.centerY, 270));
+		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x, this.worldCenter.y - 140, 0));
+		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x + 140, this.worldCenter.y, 90));
+		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x, this.worldCenter.y + 140, 180));
+		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x - 140, this.worldCenter.y, 270));
 
-        this.add.sprite(this.world.centerX, this.world.centerY, 'targets').anchor.setTo(0.5, 0.5);
-        this.rod = this.game.add.sprite(this.world.centerX, this.world.centerY, 'rod');
-        this.rod.anchor.setTo(0.5, 0.8888);
+        this.add.sprite(this.worldCenter.x, this.worldCenter.y, 'targets').anchor.setTo(0.5, 0.5);
+        this.rod = this.game.add.sprite(this.worldCenter.x, this.worldCenter.y, 'rod');
+        this.rod.anchor.setTo(0.5, 0.8591);
         this.rod.turning = false;
         this.rod.targetAngle = 0;
         this.rod.doneTurning = function () {
             this.turning = false;
         };
 
+        /*
+        this.add.sprite(0, 0, 'test');
+        this.add.sprite(this.worldCenter.x, this.worldCenter.y, 'test');
+        this.add.sprite(this.camera.view.width - 40, this.camera.view.height - 40, 'test');
+        */
+
         this.game.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
         this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.game.scale.forceLandscape = true;
         this.fsButton = this.add.button(0, 0, 'fullscreen', this.fullButtonPress, this);
+        this.fsButton.fixedToCamera = true;
+        //this.cameraZoom(0.8);
 
         this.game.scale.enterFullScreen.add(this.enterFullScreen, this);
         this.game.scale.leaveFullScreen.add(this.leaveFullScreen, this);
@@ -99,7 +108,7 @@ CatcherGame.Game.prototype = {
         var turning = {'left': false, 'right': false};
 		if (this.input.activePointer.isDown)
 		{
-			if (this.input.activePointer.x < this.world.centerX)
+			if (this.input.activePointer.x < this.worldCenter.x)
 			{
                 turning.left = true;
 			}
@@ -122,7 +131,7 @@ CatcherGame.Game.prototype = {
                 if (rod.angle === -180)
                 {
                     rod.targetAngle = 180;
-                    rod.angle = 179.99;
+                    rod.angle = 179.99; //don't question it, it works
                 }
                 rod.targetAngle = rod.targetAngle - 90;
 
@@ -154,6 +163,7 @@ CatcherGame.Game.prototype = {
 	},
 
     fullButtonPress: function () {
+        "use strict";
         this.scale.startFullScreen();
     },
 
