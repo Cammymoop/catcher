@@ -43,6 +43,8 @@ CatcherGame.Game.prototype = {
             this.turning = false;
         };
 
+        this.fsButton = this.add.button(0, 0, 'fullscreen', this.fullButtonPress, this);
+
         this.keys = {
             'Left': this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
             'Right': this.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
@@ -132,6 +134,10 @@ CatcherGame.Game.prototype = {
             this.reset();
         }
 	},
+
+    fullButtonPress: function () {
+        this.scale.startFullScreen();
+    },
 
     reset: function () {
         "use strict";

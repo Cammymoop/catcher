@@ -10,6 +10,7 @@ CatcherGame.Preloader.prototype = {
         this.game.load.image('rod', 'img/rod.png');
         this.game.load.image('square', 'img/square.png');
         this.game.load.image('targets', 'img/targets.png');
+        this.game.load.image('fullscreen', 'img/full.png');
 
         /*
         this.game.load.audio('coinSFX', ['sfx/coin.mp3', 'sfx/coin.ogg']);
