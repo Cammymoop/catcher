@@ -43,7 +43,7 @@ CatcherGame.Game.prototype = {
             this.turning = false;
         };
 
-        this.game.scale.scaleMode = Phaser.ScaleManager.SCALE_NONE;
+        this.game.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
         this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.game.scale.forceLandscape = true;
         this.fsButton = this.add.button(0, 0, 'fullscreen', this.fullButtonPress, this);
