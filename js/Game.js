@@ -41,7 +41,6 @@ CatcherGame.Game.prototype = {
         this.rod.targetAngle = 0;
         this.rod.doneTurning = function () {
             this.turning = false;
-            console.log(this.angle);
         };
 
         this.keys = {
@@ -98,8 +97,9 @@ CatcherGame.Game.prototype = {
 
         if (!rod.turning) {
             var tween = null;
+            rod.targetAngle = rod.angle;
             if (turning.left && !turning.right) {
-                if (rod.targetAngle === -180)
+                if (rod.angle === -180)
                 {
                     rod.targetAngle = 180;
                     rod.angle = 179.99;
@@ -113,7 +113,7 @@ CatcherGame.Game.prototype = {
                 //rod.angle--;
             }
             if (turning.right && !turning.left) {
-                if (rod.targetAngle === 180)
+                if (rod.angle === 180)
                 {
                     rod.targetAngle = -180;
                     rod.angle = -180;
