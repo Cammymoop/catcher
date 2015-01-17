@@ -93,7 +93,7 @@ CatcherGame.Game.prototype = {
         }
         */
         var rod = this.rod;
-        if (this.game.scale.isFullscreen) {
+        if (this.game.scale.isFullScreen) {
             this.game.scale.refresh();
         }
 
