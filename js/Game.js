@@ -34,9 +34,15 @@ CatcherGame.Game.prototype = {
 		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX, this.world.centerY + 140, 180));
 		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX - 140, this.world.centerY, 270));
 
-        this.game.add.sprite(this.world.centerX, this.world.centerY, 'targets').anchor.setTo(0.5, 0.5);
+        this.add.sprite(this.world.centerX, this.world.centerY, 'targets').anchor.setTo(0.5, 0.5);
         this.rod = this.game.add.sprite(this.world.centerX, this.world.centerY, 'rod');
         this.rod.anchor.setTo(0.5, 0.8888);
+        this.rod.turning = false;
+        this.rod.targetAngle = 0;
+        this.rod.doneTurning = function () {
+            this.turning = false;
+            console.log(this.angle);
+        };
 
         this.keys = {
             'Left': this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
@@ -90,11 +96,36 @@ CatcherGame.Game.prototype = {
             turning.right = true;
         }
 
-        if (turning.left && !turning.right) {
-            rod.angle--;
-        }
-        if (turning.right && !turning.left) {
-            rod.angle++;
+        if (!rod.turning) {
+            var tween = null;
+            if (turning.left && !turning.right) {
+                if (rod.targetAngle === -180)
+                {
+                    rod.targetAngle = 180;
+                    rod.angle = 179.99;
+                }
+                rod.targetAngle = rod.targetAngle - 90;
+
+                tween = this.add.tween(rod).to({angle: rod.targetAngle}, 200, Phaser.Easing.Cubic.InOut, true);
+                tween.onComplete.add(rod.doneTurning, rod);
+
+                rod.turning = true;
+                //rod.angle--;
+            }
+            if (turning.right && !turning.left) {
+                if (rod.targetAngle === 180)
+                {
+                    rod.targetAngle = -180;
+                    rod.angle = -180;
+                }
+                rod.targetAngle = rod.targetAngle + 90;
+
+                tween = this.add.tween(rod).to({angle: rod.targetAngle}, 200, Phaser.Easing.Cubic.InOut, true);
+                tween.onComplete.add(rod.doneTurning, rod);
+
+                rod.turning = true;
+                //rod.angle++;
+            }
         }
 
         if (this.keys.R.isDown) {
