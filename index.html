@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=800, initial-scale=1">
+        <meta name="viewport" content="width=980, initial-scale=1">
         <title>Phaser Prototype</title>
         <script src="js/phaser.min.js"></script>
         <script src="js/Boot.js"></script>
@@ -14,7 +14,7 @@
 
         <script type="text/javascript">
             window.onload = function() {
-                var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gameContainer');
+                var game = new Phaser.Game(980, 600, Phaser.AUTO, 'gameContainer');
                 game.state.add('Boot', CatcherGame.Boot);
                 game.state.start('Boot');
             };

@@ -19,7 +19,7 @@ CatcherGame.Preloader.prototype = {
         this.game.load.audio('bgMusic', ['sfx/ludumEdited.mp3', 'sfx/ludumEdited.ogg']);
         */
 
-        this.loadingBar = this.add.sprite(50, 300, 'loadingBar');
+        this.loadingBar = this.add.sprite(this.world.centerX - 350, this.world.centerY, 'loadingBar');
         this.loadingBar.anchor.setTo(0, 0.5);
 
         this.load.setPreloadSprite(this.loadingBar);
