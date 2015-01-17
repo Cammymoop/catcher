@@ -60,6 +60,8 @@ CatcherGame.Game.prototype = {
         this.game.scale.enterFullScreen.add(this.enterFullScreen, this);
         this.game.scale.leaveFullScreen.add(this.leaveFullScreen, this);
 
+        this.coin = new CatcherGame.Coin(this.add, this.worldCenter, 20, CatcherGame.Coin.UP);
+
         this.keys = {
             'Left': this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
             'Right': this.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
@@ -160,6 +162,8 @@ CatcherGame.Game.prototype = {
         if (this.keys.R.isDown) {
             this.reset();
         }
+
+        this.coin.update();
 	},
 
     fullButtonPress: function () {
@@ -169,7 +173,7 @@ CatcherGame.Game.prototype = {
 
     reset: function () {
         "use strict";
-        this.music.stop();
+        //this.music.stop();
         this.game.state.start('Game');
     },
 

@@ -1,10 +1,13 @@
 CatcherGame.Coin = function (factory, target, speed, direction) {
     "use strict";
-    this.speed = speed;
+    this.speed = speed / 10;
     this.direction = direction;
     this.angle = direction;
 
     this.sprite = factory.sprite(target.x, target.y, 'square');
+    this.sprite.anchor.setTo(0.5, 0.5);
+
+    this.moveBack();
 };
 
 CatcherGame.Coin.UP = 0;
@@ -16,20 +19,29 @@ CatcherGame.Coin.OFFSCREEN_DISTANCE = 600;
 CatcherGame.Coin.prototype = {
     moveBack: function () {
         "use strict";
-        var axis = null;
-        var sign = null;
-        if (this.direction === this.UP || this.direction === this.DOWN) {
-            axis = 'y';
-            sign = this.direction === this.UP ? 1 : -1;
-        } else {
-            axis = 'x';
-            sign = this.direction === this.LEFT ? 1 : -1;
-        }
+        this.sprite[this.getAxis()] += this.getSign(true) * CatcherGame.Coin.OFFSCREEN_DISTANCE;
+    },
 
-        this.sprite[axis] += sign * this.OFFSCREEN_DISTANCE;
+    getSign: function (invert) {
+        "use strict";
+        if (this.direction === CatcherGame.Coin.UP || this.direction === CatcherGame.Coin.LEFT) {
+            return invert ? 1 : -1;
+        } else {
+            return invert ? -1 : 1;
+        }
+    },
+
+    getAxis: function () {
+        "use strict";
+        if (this.direction === CatcherGame.Coin.UP || this.direction === CatcherGame.Coin.DOWN) {
+            return 'y';
+        } else {
+            return 'x';
+        }
     },
 
 	update: function () {
         "use strict";
+        this.sprite[this.getAxis()] += this.speed * this.getSign();
 	}
 };
