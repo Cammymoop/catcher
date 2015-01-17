@@ -26,13 +26,21 @@ CatcherGame.Game.prototype = {
         this.DEBUG_MODE = true;
         this.stage.backgroundColor = '#222222';
         //this.add.sprite(0, 0, 'background');
-        this.physics.startSystem(Phaser.Physics.ARCADE);
+        //this.physics.startSystem(Phaser.Physics.ARCADE);
+
+        this.hotspots = [];
+		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX, this.world.centerY - 140, 0));
+		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX + 140, this.world.centerY, 90));
+		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX, this.world.centerY + 140, 180));
+		this.hotspots.push(new CatcherGame.HotSpot(this.world.centerX - 140, this.world.centerY, 270));
 
         this.game.add.sprite(this.world.centerX, this.world.centerY, 'targets').anchor.setTo(0.5, 0.5);
         this.rod = this.game.add.sprite(this.world.centerX, this.world.centerY, 'rod');
         this.rod.anchor.setTo(0.5, 0.8888);
 
         this.keys = {
+            'Left': this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
+            'Right': this.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
             'R': this.input.keyboard.addKey(Phaser.Keyboard.R)
         };
 	},
@@ -63,7 +71,31 @@ CatcherGame.Game.prototype = {
         */
         var rod = this.rod;
 
-        rod.angle++;
+        var turning = {'left': false, 'right': false};
+		if (this.input.activePointer.isDown)
+		{
+			if (this.input.activePointer.x < this.world.centerX)
+			{
+                turning.left = true;
+			}
+			else
+			{
+                turning.right = true;
+			}
+		}
+        if (this.keys.Left.isDown) {
+            turning.left = true;
+        }
+        if (this.keys.Right.isDown) {
+            turning.right = true;
+        }
+
+        if (turning.left && !turning.right) {
+            rod.angle--;
+        }
+        if (turning.right && !turning.left) {
+            rod.angle++;
+        }
 
         if (this.keys.R.isDown) {
             this.reset();
@@ -80,4 +112,12 @@ CatcherGame.Game.prototype = {
         "use strict";
         this.gameOverText.visible = true;
     }
+};
+
+CatcherGame.HotSpot = function (x, y, angle)
+{
+    "use strict";
+    this.x = x;
+    this.y = y;
+    this.angle = angle;
 };
