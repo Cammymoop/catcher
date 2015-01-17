@@ -93,7 +93,9 @@ CatcherGame.Game.prototype = {
         }
         */
         var rod = this.rod;
-        this.game.scale.refresh();
+        if (this.scale.isFullscreen) {
+            this.game.scale.refresh();
+        }
 
         var turning = {'left': false, 'right': false};
 		if (this.input.activePointer.isDown)
