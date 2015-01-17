@@ -47,12 +47,25 @@ CatcherGame.Game.prototype = {
         this.game.scale.forceLandscape = true;
         this.fsButton = this.add.button(0, 0, 'fullscreen', this.fullButtonPress, this);
 
+        this.game.scale.enterFullScreen.add(this.enterFullScreen, this);
+        this.game.scale.leaveFullScreen.add(this.leaveFullScreen, this);
+
         this.keys = {
             'Left': this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
             'Right': this.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
             'R': this.input.keyboard.addKey(Phaser.Keyboard.R)
         };
 	},
+
+    enterFullScreen: function () {
+        "use strict";
+        this.fsButton.visible = false;
+    },
+
+    leaveFullScreen: function () {
+        "use strict";
+        this.fsButton.visible = true;
+    },
 
 	update: function () {
         "use strict";
