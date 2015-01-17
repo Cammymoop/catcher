@@ -61,11 +61,13 @@ CatcherGame.Game.prototype = {
     enterFullScreen: function () {
         "use strict";
         this.fsButton.visible = false;
+        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     },
 
     leaveFullScreen: function () {
         "use strict";
         this.fsButton.visible = true;
+        this.game.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
     },
 
 	update: function () {
@@ -93,9 +95,6 @@ CatcherGame.Game.prototype = {
         }
         */
         var rod = this.rod;
-        if (this.game.scale.isFullScreen) {
-            this.game.scale.refresh();
-        }
 
         var turning = {'left': false, 'right': false};
 		if (this.input.activePointer.isDown)
