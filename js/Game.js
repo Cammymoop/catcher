@@ -174,6 +174,7 @@ CatcherGame.Game.prototype = {
     reset: function () {
         "use strict";
         //this.music.stop();
+        this.world.setBounds(0, 0, this.worldCenter.x*2, this.worldCenter.y*2);
         this.game.state.start('Game');
     },
 
