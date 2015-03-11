@@ -29,11 +29,18 @@ CatcherGame.Game.prototype = {
         this.worldCenter = new Phaser.Point(this.world.centerX, this.world.centerY);
         this.world.setBounds(-this.world.centerX,  -this.world.centerY, this.world.width*2, this.world.height*2);
 
-        this.hotspots = [];
-		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x, this.worldCenter.y - 140, 0));
-		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x + 140, this.worldCenter.y, 90));
-		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x, this.worldCenter.y + 140, 180));
-		this.hotspots.push(new CatcherGame.HotSpot(this.worldCenter.x - 140, this.worldCenter.y, 270));
+        this.hotspots = {};
+		this.hotspots['n'] = new CatcherGame.HotSpot(this.worldCenter.x, this.worldCenter.y - 100, 0);
+		this.hotspots['e'] = new CatcherGame.HotSpot(this.worldCenter.x + 100, this.worldCenter.y, 90);
+		this.hotspots['s'] = new CatcherGame.HotSpot(this.worldCenter.x, this.worldCenter.y + 100, 180);
+		this.hotspots['w'] = new CatcherGame.HotSpot(this.worldCenter.x - 100, this.worldCenter.y, 270);
+        this.hotspots.getByAngle = function (angle) {
+            var dir = CatcherGame.angleToDir(angle);
+            if (!this[dir]) {
+                console.log('No hotsot!');
+            }
+            return this[dir];
+        };
 
         this.add.sprite(this.worldCenter.x, this.worldCenter.y, 'targets').anchor.setTo(0.5, 0.5);
         this.rod = this.game.add.sprite(this.worldCenter.x, this.worldCenter.y, 'rod');
@@ -60,7 +67,15 @@ CatcherGame.Game.prototype = {
         this.game.scale.enterFullScreen.add(this.enterFullScreen, this);
         this.game.scale.leaveFullScreen.add(this.leaveFullScreen, this);
 
-        this.coin = new CatcherGame.Coin(this.add, this.worldCenter, 20, CatcherGame.Coin.UP);
+        this.score = 0;
+        this.scoreDisplay = this.add.text(60, 8, 'Score: 0', {font: "18pt Sans", fill: "#DDDDDD"});
+
+		this.testLevData = JSON.parse(this.cache.getText('testLev'));
+
+        this.coins = [];
+        //this.coins.push(new CatcherGame.Coin(this.add, this.hotspots['s'], 20, CatcherGame.Coin.UP));
+        this.levTime = 0;
+        this.startLev(this.testLevData.sets[0]);
 
         this.keys = {
             'Left': this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
@@ -68,6 +83,26 @@ CatcherGame.Game.prototype = {
             'R': this.input.keyboard.addKey(Phaser.Keyboard.R)
         };
 	},
+
+    startLev: function (data) {
+        "use strict";
+        this.maxScore = data['total'];
+        this.levOffset = 0;
+
+        data.coins.forEach(this.queueCoin, this);
+    },
+
+    queueCoin: function (coinData) {
+        "use strict";
+        this.levOffset += coinData.delay;
+
+        this.time.events.add(Phaser.Timer.SECOND * this.levOffset, this.addCoin, this, coinData); 
+    },
+
+    addCoin: function (coinData) {
+        "use strict";
+        this.coins.push(new CatcherGame.Coin(this.add, this.hotspots[coinData.target], 20, coinData.dir)); 
+    },
 
     enterFullScreen: function () {
         "use strict";
@@ -127,6 +162,7 @@ CatcherGame.Game.prototype = {
         }
 
         if (!rod.turning) {
+            this.grabCoins(this.hotspots.getByAngle(rod.angle));
             var tween = null;
             rod.targetAngle = rod.angle;
             if (turning.left && !turning.right) {
@@ -141,7 +177,6 @@ CatcherGame.Game.prototype = {
                 tween.onComplete.add(rod.doneTurning, rod);
 
                 rod.turning = true;
-                //rod.angle--;
             }
             if (turning.right && !turning.left) {
                 if (rod.angle === 180)
@@ -155,7 +190,6 @@ CatcherGame.Game.prototype = {
                 tween.onComplete.add(rod.doneTurning, rod);
 
                 rod.turning = true;
-                //rod.angle++;
             }
         }
 
@@ -163,8 +197,16 @@ CatcherGame.Game.prototype = {
             this.reset();
         }
 
-        this.coin.update();
+        this.coins.forEach(function(coin) { coin.update(); if (coin.collected) { this.score++; } }, this);
+
+        this.scoreDisplay.setText('Score: ' + this.score);
+        this.coins = this.coins.filter(function (coin) { return coin.isAlive(); });
 	},
+
+    grabCoins: function (hotspot) {
+        "use strict";
+        this.coins.forEach(function (coin) { coin.collect(hotspot.getPosition()); });
+    },
 
     fullButtonPress: function () {
         "use strict";
@@ -190,4 +232,51 @@ CatcherGame.HotSpot = function (x, y, angle)
     this.x = x;
     this.y = y;
     this.angle = angle;
+
+    this.getPosition = function () {
+        return new Phaser.Point(this.x, this.y);
+    };
+};
+
+CatcherGame.dirToAngle = function (dir) {
+    "use strict";
+    dir = dir.toUpperCase();
+    if (dir === 'N' || dir === 'NORTH') {
+        return 0;
+    } else if (dir === 'S' || dir === 'SOUTH') {
+        return 180;
+    } else if (dir === 'E' || dir === 'EAST') {
+        return 90;
+    } else if (dir === 'W' || dir === 'WEST') {
+        return 270;
+    }
+};
+
+CatcherGame.normalizeAngle = function (angle) {
+    var neg = false;
+    if (angle < 0) {
+        neg = true;
+        angle = -angle;
+    }
+    if (angle >= 360) {
+        angle = angle % 360;
+    }
+    return (neg ?  360 - angle : angle);
+};
+
+CatcherGame.angleToDir = function (angle) {
+    "use strict";
+    angle = CatcherGame.normalizeAngle(angle);
+    if (angle === 0) {
+        return 'n';
+    } else if (angle === 90) {
+        return 'e';
+    } else if (angle === 180) {
+        return 's';
+    } else if (angle === 270) {
+        return 'w';
+    } else {
+        console.log('Bad angle!');
+        return 'n';
+    }
 };

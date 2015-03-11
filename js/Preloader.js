@@ -14,6 +14,8 @@ CatcherGame.Preloader.prototype = {
 
         this.game.load.image('test', 'img/test.png');
 
+		this.load.text('testLev', 'data/levels.json');
+
         /*
         this.game.load.audio('coinSFX', ['sfx/coin.mp3', 'sfx/coin.ogg']);
         this.game.load.audio('hurtSFX', ['sfx/hurt.mp3', 'sfx/hurt.ogg']);

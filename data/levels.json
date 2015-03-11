@@ -1,0 +1,14 @@
+{
+    "sets": [
+        {
+            "total": 5,
+            "coins": [
+                { "delay": 0.2, "target": "s", "dir": "n" },
+                { "delay": 0.4, "target": "e", "dir": "n" },
+                { "delay": 0.8, "target": "w", "dir": "s" },
+                { "delay": 0.4, "target": "e", "dir": "w" },
+                { "delay": 0.2, "target": "n", "dir": "n" }
+            ]
+        }
+    ]
+}
