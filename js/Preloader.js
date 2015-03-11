@@ -11,6 +11,7 @@ CatcherGame.Preloader.prototype = {
         this.game.load.image('square', 'img/square.png');
         this.game.load.image('targets', 'img/targets.png');
         this.game.load.image('fullscreen', 'img/full.png');
+        this.game.load.image('reset', 'img/reset.png');
 
         this.game.load.image('test', 'img/test.png');
 

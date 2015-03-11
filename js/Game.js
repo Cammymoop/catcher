@@ -62,6 +62,9 @@ CatcherGame.Game.prototype = {
         this.game.scale.forceLandscape = true;
         this.fsButton = this.add.button(0, 0, 'fullscreen', this.fullButtonPress, this);
         this.fsButton.fixedToCamera = true;
+        this.restartButton = this.add.button(980, 0, 'reset', this.reset, this);
+        this.restartButton.fixedToCamera = true;
+        this.restartButton.anchor.setTo(1, 0);
         //this.cameraZoom(0.8);
 
         this.game.scale.enterFullScreen.add(this.enterFullScreen, this);
